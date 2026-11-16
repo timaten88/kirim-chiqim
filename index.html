@@ -40,6 +40,32 @@ iframe{position:fixed;top:0;left:0;right:0;bottom:env(safe-area-inset-bottom);wi
   });
 })();
 </script>
-<iframe title="Kirim-Chiqim" src="https://script.google.com/macros/s/AKfycbzfmCqxU37_zw7h1Hdz7_9kjHVDKh0dS5Frflb356AYqtXQqX16iJ9d68xF2Q_C6xpa/exec" onload="var l=document.getElementById('l');if(l)l.remove()"></iframe>
+<script>
+// Ilova shu sahifaning oʻzida ishga tushadi — login/parol shu sahifa xotirasida mustahkam saqlanadi
+(function () {
+  var EXEC = 'https://script.google.com/macros/s/AKfycbzfmCqxU37_zw7h1Hdz7_9kjHVDKh0dS5Frflb356AYqtXQqX16iJ9d68xF2Q_C6xpa/exec';
+  var icon = document.querySelector('link[rel="apple-touch-icon"]');
+  var extra = '<script>window.KC_API=' + JSON.stringify(EXEC) + ';<\/script>' + (icon ? icon.outerHTML : '') +
+    '<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kirim-Chiqim">';
+  function run(h) { h = h.replace(/<head>/i, '<head>' + extra); document.open(); document.write(h); document.close(); }
+  function frame() {
+    var f = document.createElement('iframe');
+    f.title = 'Kirim-Chiqim'; f.src = EXEC;
+    f.onload = function () { var l = document.getElementById('l'); if (l) l.remove(); };
+    document.body.appendChild(f);
+  }
+  fetch(EXEC + '?raw=1', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw 0; return r.text(); })
+    .then(function (h) {
+      if (h.indexOf('kc_token') < 0) throw 0;
+      try { localStorage.setItem('kc_html', h); } catch (e) {}
+      run(h);
+    })
+    .catch(function () {
+      var c = null; try { c = localStorage.getItem('kc_html'); } catch (e) {}
+      if (c) run(c); else frame();
+    });
+})();
+</script>
 </body>
 </html>
